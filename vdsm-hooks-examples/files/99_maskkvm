@@ -1,0 +1,16 @@
+#!/usr/bin/python2
+
+import hooking
+
+
+if __name__ == '__main__':
+    domxml = hooking.read_domxml()
+    domain = domxml.getElementsByTagName('domain')[0]
+    cmdline = domxml.createElement('qemu:commandline')
+    for arg in ('-cpu', 'host,kvm=off,hv_time,hv_relaxed,hv_vapic,hv_spinlocks=0x1fff,hv_vendor_id=Nvidia43FIX'):
+        cmdline_arg = domxml.createElement('qemu:arg')
+        cmdline_arg.setAttribute('value', arg)
+        cmdline.appendChild(cmdline_arg)
+
+        domain.appendChild(cmdline)
+        hooking.write_domxml(domxml)

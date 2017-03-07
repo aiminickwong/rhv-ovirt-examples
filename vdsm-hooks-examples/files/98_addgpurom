@@ -1,0 +1,23 @@
+#!/usr/bin/python2
+
+import os
+import sys
+import hooking
+import traceback
+    
+try:
+   domxml = hooking.read_domxml()   #here we read the VM XML into the domxml variable
+   hostdev = domxml.getElementsByTagName('hostdev')[0] #find and read the hostdev definition in the VM XML
+
+   hostdev.setAttribute('xvga', 'yes')  #change an attribute here
+   hostdev.setAttribute('managed', 'yes')  #change an attribute here
+   hostdev.setAttribute('multifunction', 'on')  #change an attribute here
+
+   rom = domxml.createElement('rom')
+   rom.setAttribute('file', '/usr/share/qemu-kvm/vbios.dump')  #change an attribute here
+
+   hostdev.appendChild(rom)
+   hooking.write_domxml(domxml)                       #and write to the altered domxml
+except:
+   sys.stderr.write('rom: [unexpected error]: %s\n' % traceback.format_exc())
+   sys.exit(2)
